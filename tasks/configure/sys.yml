@@ -65,13 +65,6 @@
   become: true
   when: clickhouse_clusters is defined
 
-- name: get shard of host
-  set_fact:
-    this_shard: "{{ item.0.key }}"
-  loop: "{{ clickhouse_clusters.polza_ru | dict2items | subelements('value') }}"
-  when: clickhouse_macros is defined and item.1.host == ansible_hostname
-  become: true
-
 - name: Config | Generate macros config
   template:
     src: macros.j2
