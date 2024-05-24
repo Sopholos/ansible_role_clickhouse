@@ -66,15 +66,22 @@
   when: clickhouse_clusters is defined
 
 - name: Config | Generate macros config
-  template:
-    src: macros.j2
-    dest: "{{ clickhouse_path_configdir }}/config.d/macros.xml"
-    owner: "{{ clickhouse_user | default('clickhouse') }}"
-    group: "{{ clickhouse_group | default('clickhouse') }}"
-    mode: "ug=rw,o-rwx"
-  notify: restart-ch
-  become: true
-  when: clickhouse_macros is defined 
+  block:
+  - name: get shard of host
+    set_fact:
+      this_shard: "{{ item.0.key }}"
+    loop: "{{ clickhouse_clusters.polza_ru | dict2items | subelements('value') }}"
+    when: item.1.host == ansible_hostname
+  - name: Created macros.j2
+    template:
+      src: macros.j2
+      dest: "{{ clickhouse_path_configdir }}/config.d/macros.xml"
+      owner: "{{ clickhouse_user | default('clickhouse') }}"
+      group: "{{ clickhouse_group | default('clickhouse') }}"
+      mode: "ug=rw,o-rwx"
+    notify: restart-ch
+    become: true
+  when: clickhouse_macros is defined
 
 - name: Config | Generate zookeeper servers config
   template:
