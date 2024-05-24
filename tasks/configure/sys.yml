@@ -71,7 +71,6 @@
   loop: "{{ clickhouse_clusters.polza_ru | dict2items | subelements('value') }}"
   when: item.1.host == ansible_hostname
   become: true
-  when: clickhouse_macros is defined 
 
 - name: Config | Generate macros config
   template:
