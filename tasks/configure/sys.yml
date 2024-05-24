@@ -69,7 +69,7 @@
   set_fact:
     this_shard: "{{ item.0.key }}"
   loop: "{{ clickhouse_clusters.polza_ru | dict2items | subelements('value') }}"
-  when: item.1.host == ansible_hostname
+  when: clickhouse_macros is defined and item.1.host == ansible_hostname
   become: true
 
 - name: Config | Generate macros config
@@ -81,7 +81,7 @@
     mode: "ug=rw,o-rwx"
   notify: restart-ch
   become: true
-  when: clickhouse_macros is defined 
+  when: clickhouse_macros is defined
 
 - name: Config | Generate zookeeper servers config
   template:
