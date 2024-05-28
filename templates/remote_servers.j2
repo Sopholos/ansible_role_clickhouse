@@ -8,9 +8,9 @@
         <secret>{{ clickhouse_distributed_secret }}</secret>
 {% endif %}
         <shard>
-{% for shard_name, replicas in shards_name.items() %}
-{% for replica in replicas %}
           <internal_replication>true</internal_replication>
+{% for shard_name.hosts, replicas  in shards_name.items() %}
+{% for replica in replicas %}
           <replica>
             <host>{{ replica['host'] }}</host>
             <port>{{ replica['port'] | default(9000) }}</port>
