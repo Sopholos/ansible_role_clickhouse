@@ -9,15 +9,17 @@
 {% endif %}
         <shard>
           <internal_replication>true</internal_replication>
-{% for shard_name.hosts, replicas  in shards_name.items() %}
+{% for shard_name, hosts in shards_name.items() %}      
+{% for host, replicas in hosts.items() %}
 {% for replica in replicas %}
           <replica>
-            <host>{{ replica['host'] }}</host>
-            <port>{{ replica['port'] | default(9000) }}</port>
+            <host>{{ replica.hosts['host'] }}</host>
+            <port>{{ replica.hosts['port'] | default(9000) }}</port>
 {% if 'secure' in replica %}
             <secure>1</secure>
 {% endif %}
           </replica>
+{% endfor %}
 {% endfor %}
       </shard>
 {% endfor %}      
