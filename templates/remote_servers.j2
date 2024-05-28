@@ -10,7 +10,7 @@
         <shard>
 {% for shard_name, replicas in shards_name.items() %}
 {% for replica in replicas %}
-          <weight>{{ replica['weight'] }}</weight>
+          <internal_replication>true</internal_replication>
           <replica>
             <host>{{ replica['host'] }}</host>
             <port>{{ replica['port'] | default(9000) }}</port>
