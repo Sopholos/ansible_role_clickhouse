@@ -13,8 +13,8 @@
           <weight>{{ replica['weight'] }}</weight>
           <internal_replication>true</internal_replication>
           <replica>
-            <host>{{ replica.hosts['host'] }}</host>
-            <port>{{ replica.hosts['port'] | default(9000) }}</port>
+            <host>{{ replica['host'] }}</host>
+            <port>{{ replica['port'] | default(9000) }}</port>
 {% if 'secure' in replica %}
             <secure>1</secure>
 {% endif %}
