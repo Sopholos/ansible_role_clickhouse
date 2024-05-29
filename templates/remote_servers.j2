@@ -9,7 +9,7 @@
 {% endif %}
         <shard>
           <internal_replication>true</internal_replication>
-{% for shard_name, hosts in shards_name.items() %}      
+{% for shard_name, hosts in shards_name.items() | list %}      
 {% for host, replicas in hosts.items() %}
 {% for replica in replicas %}
           <replica>
