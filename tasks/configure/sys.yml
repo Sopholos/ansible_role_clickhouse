@@ -74,7 +74,7 @@
     mode: "ug=rw,o-rwx"
   notify: restart-ch
   become: true
-  when: clickhouse_macros is defined 
+  when: clickhouse_macros is defined
 
 - name: Config | Generate zookeeper servers config
   template:

@@ -344,11 +344,17 @@ To automate detection of `shard` macro value based on `clickhouse_clusters` dict
     clickhouse_clusters:
       your_cluster_name:
         shard_1:
-            - { host: "db-host-1", port: 9000 }
-            - { host: "db-host-2", port: 9000 }
+          settings:
+            weight: "1"
+          hosts:
+          - { host: "db-host-1", port: 9000 }
+          - { host: "db-host-2", port: 9000 }
         shard_2:
-            - { host: "db-host-3", port: 9000 }
-            - { host: "db-host-4", port: 9000 }       
+          settings:
+            weight: "2"
+          hosts:
+          - { host: "db-host-3", port: 9000 }
+          - { host: "db-host-4", port: 9000 }       
     clickhouse_macros:
       shard: "{{ this_shard }}"
       replica: "{{ ansible_hostname }}"
