@@ -7,11 +7,11 @@
 {% if clickhouse_distributed_secret is defined %}
         <secret>{{ clickhouse_distributed_secret }}</secret>
 {% endif %}
-{% for shard_name, replicas in shards_name.items() %}      
-{% for replica in replicas %}
+{% for shard_name, shard_config  in shards_name.items() %}
         <shard>
-          <weight>{{ replica['weight'] }}</weight>
+          <weight>{{ shard_config.settings.weight|d('1') }}</weight>
           <internal_replication>true</internal_replication>
+{% for replica in shard_config.hosts %}
           <replica>
             <host>{{ replica['host'] }}</host>
             <port>{{ replica['port'] | default(9000) }}</port>
