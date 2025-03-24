@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+{{ ansible_managed | comment('xml') }}
+<clickhouse>
+  <storage_configuration>
+    <disks>
+{% for disk, disk_options in clickhouse_storage.disks.items() %}
+      <{{ disk }}>
+{% for option, value in disk_options.items() %}
+        <{{ option }}>{{ value }}</{{ option }}>
+{% endfor %}
+      </{{ disk }}>
+{% endfor %}
+    </disks>
+    <policies>
+{% for policy, policy_options in clickhouse_storage.policies.items() %}
+      <{{ policy }}>
+        <volumes>
+{% for volume, volume_options in policy_options.volumes.items() %}
+          <{{ volume }}>
+{% for volume_option, volume_option_value in volume_options.items() %}
+            <{{ volume_option }}>{{ volume_option_value }}</{{ volume_option }}>
+{% endfor %}
+          </{{ volume }}>
+{% endfor %}
+        </volumes>
+{% if policy_options.move_factor is defined %}
+        <move_factor>{{ policy_options.move_factor }}</move_factor>
+{% endif %}
+      </{{ policy }}>
+{% endfor %}
+    </policies>
+  </storage_configuration>
+</clickhouse>
