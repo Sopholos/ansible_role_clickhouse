@@ -1,7 +1,7 @@
 ---
 - name: Set ClickHose Connection String
   set_fact:
-    clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhouse_tcp_port }}"
+    clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}{{' --secure' if clickhouse_tcp_secure_port is defined else '' }}"
 
 - name: Gather list of existing databases
   command: "{{ clickhouse_connection_string }} -q 'show databases'"
