@@ -1,6 +1,6 @@
 #jinja2: trim_blocks: True, lstrip_blocks: True
 <?xml version="1.0"?>
-{{ ansible_managed | comment('xml') }} 
+{{ ansible_managed | comment('xml') }}
 <clickhouse>
     <logger>
         <!-- Possible levels: https://github.com/pocoproject/poco/blob/develop/Foundation/include/Poco/Logger.h#L105 -->
@@ -132,7 +132,7 @@
     <user_files_path>{{ clickhouse_path_user_files }}</user_files_path>
 
     <!-- Path to configuration file with users, access rights, profiles of settings, quotas. -->
-    <users_config>users.xml</users_config>
+    <users_config>../users.d/users.xml</users_config>
 
     <!-- Default profile of settings. -->
     <default_profile>default</default_profile>
@@ -301,7 +301,7 @@
         <partition_by>toYYYYMM(event_date)</partition_by>
         {% if clickhouse_query_thread_log_ttl is defined %}
         <ttl>{{ clickhouse_query_thread_log_ttl }}</ttl>
-        {% endif %}        
+        {% endif %}
         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
     </query_thread_log>
 

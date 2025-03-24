@@ -29,7 +29,7 @@
   tags: [install]
   when: not clickhouse_remove|bool
 
-- include_tasks: 
+- include_tasks:
     file: configure/sys.yml
     apply:
       tags: [config, config_sys]
@@ -37,15 +37,20 @@
   when: not clickhouse_remove|bool
 
 - name: "Notify Handlers Now"
+  tags: [always]
   meta: flush_handlers
 
-- include_tasks: service.yml
+- include_tasks:
+    file: service.yml
+    apply:
+      tags: [always]
   tags: [always]
 
 - name: "Wait for Clickhouse Server to Become Ready"
   wait_for:
     port: "{{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}"
     delay: "{{ clickhouse_ready_delay }}"
+  tags: [always]
   when: not clickhouse_remove|bool
 
 - include_tasks:

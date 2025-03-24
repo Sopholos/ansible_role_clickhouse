@@ -1,11 +1,18 @@
 ---
+- name: Clickhouser | Copy Daemon scripts
+  ansible.builtin.template:
+    src: clickhouse-server.service.j2
+    dest: "/lib/systemd/system/clickhouse-server.service"
+    mode: 0644
+  notify: restart-ch
 
 - name: >-
     Ensure {{ clickhouse_service }}
     is enabled: {{ clickhouse_service_enable }}
     and state: {{ clickhouse_service_ensure }}
-  service:
+  systemd:
     name: "{{ clickhouse_service }}"
     enabled: "{{ clickhouse_service_enable }}"
     state: "{{ clickhouse_service_ensure }}"
+    daemon_reload: true
   become: true
