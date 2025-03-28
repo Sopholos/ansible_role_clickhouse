@@ -1,0 +1,11 @@
+---
+- name: CLICKHOUSE | Assigning roles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    --multiquery
+    -q
+    {{ lookup('template', 'DDL/GRANT_ROLE.j2') | quote }};
+  when: clickhouse_custom_grant_roles is defined
+  register: assigning_roles
+  changed_when: assigning_roles.rc != 0
+  tags: [config_grants]

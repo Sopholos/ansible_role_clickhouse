@@ -1,0 +1,32 @@
+---
+- name: CLICKHOUSE | Get all LDAP users for grants cleaning (Optional step)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "SELECT name FROM system.users WHERE storage == 'ldap';"
+  register: ldap_user_list
+  changed_when: False
+  when: clickhouse_custom_grants_previous_cleanup
+  tags: [config_grants]
+
+- name: CLICKHOUSE | Previous grants cleaning (Optional step)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "REVOKE ALL ON *.* FROM ALL EXCEPT {{ ((clickhouse_default_users | default([]) + clickhouse_admin_users | default([]) + clickhouse_users_custom | default([]) + clickhouse_users_default | default([])) | map(attribute='name') | list + (ldap_user_list.stdout_lines | default([]))) | join(', ') }};"
+  register: grants_clean
+  changed_when: grants_clean.rc != 0
+  when: clickhouse_custom_grants_previous_cleanup
+  tags: [config_grants]
+
+- name: CLICKHOUSE | Grant perms & privs
+  ansible.builtin.include_tasks: configure_sql/grants.yml
+  with_items: "{{ clickhouse_custom_grants }}"
+  when: clickhouse_custom_grants is defined
+  tags: [config_grants]
+
+- name: CLICKHOUSE | Grant roles
+  ansible.builtin.include_tasks: configure_sql/grants-roles.yml
+  with_items: "{{ clickhouse_custom_grant_roles }}"
+  when: clickhouse_custom_grant_roles is defined
+  tags: [config_grants]

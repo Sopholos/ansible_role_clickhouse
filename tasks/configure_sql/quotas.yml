@@ -1,0 +1,35 @@
+---
+- name: CLICKHOUSE | List quotas (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "SELECT name FROM system.quotas WHERE storage == 'local_directory';"
+  changed_when: False
+  register: clickhouse_existing_sql_quotas
+  tags: [config_quotas]
+
+- name: CLICKHOUSE | Drop quotas (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "DROP QUOTA IF EXISTS {{ item }};"
+  with_items: "{{ clickhouse_existing_sql_quotas.stdout_lines }}"
+  when:
+    - clickhouse_existing_sql_quotas is defined
+    - item not in clickhouse_custom_quotas | map(attribute='name') | list
+  register: drop_quotas
+  changed_when: drop_quotas.rc != 0
+  tags: [config_quotas]
+
+- name: CLICKHOUSE | Add quotas (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    {{ lookup('template', 'DDL/QUOTA.j2') | quote }};
+  with_items: "{{ clickhouse_custom_quotas }}"
+  when:
+    - clickhouse_custom_quotas is defined
+    - item.name not in clickhouse_existing_sql_quotas.stdout_lines
+  register: add_quotas
+  changed_when: add_quotas.rc != 0
+  tags: [config_quotas]

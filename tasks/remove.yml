@@ -9,6 +9,7 @@
     - "{{ clickhouse_path_configdir }}"
     - "{{ clickhouse_path_tmp }}"
     - "{{ clickhouse_path_data }}"
+    - "{{ clickhouse_access_control_path }}"
   become: true
   when: clickhouse_remove_full
 

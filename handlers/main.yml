@@ -4,3 +4,15 @@
   set_fact:
     clickhouse_service_ensure: "restarted"
   listen: 'restart-ch'
+
+- name: >-
+    Ensure {{ clickhouse_service }}
+    is enabled: {{ clickhouse_service_enable }}
+    and state: {{ clickhouse_service_ensure }}
+  systemd:
+    name: "{{ clickhouse_service }}"
+    enabled: "{{ clickhouse_service_enable }}"
+    state: "{{ clickhouse_service_ensure }}"
+    daemon_reload: true
+  become: true
+  listen: 'restart-ch'

@@ -1,0 +1,35 @@
+---
+- name: CLICKHOUSE | List settings profiles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "SELECT name FROM system.settings_profiles WHERE storage == 'local_directory';"
+  changed_when: False
+  register: clickhouse_existing_sql_settings_profiles
+  tags: [config_settings_profiles]
+
+- name: CLICKHOUSE | Drop settings-profiles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "DROP SETTINGS PROFILE IF EXISTS {{ item }};"
+  with_items: "{{ clickhouse_existing_sql_settings_profiles.stdout_lines }}"
+  when:
+    - clickhouse_existing_sql_settings_profiles is defined
+    - item not in clickhouse_custom_settings_profiles | map(attribute='name') | list
+  register: drop_profiles
+  changed_when: drop_profiles.rc != 0
+  tags: [config_settings_profiles]
+
+- name: CLICKHOUSE | Add settings profiles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    {{ lookup('template', 'DDL/SETTINGS-PROFILE.j2') | quote }};
+  with_items: "{{ clickhouse_custom_settings_profiles }}"
+  when:
+    - clickhouse_custom_settings_profiles is defined
+    - item.name not in clickhouse_existing_sql_settings_profiles.stdout_lines
+  register: add_profiles
+  changed_when: add_profiles.rc != 0
+  tags: [config_settings_profiles]

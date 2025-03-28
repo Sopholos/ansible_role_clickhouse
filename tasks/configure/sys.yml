@@ -11,6 +11,7 @@
     - "{{ clickhouse_path_configdir }}"
     - "{{ clickhouse_path_tmp }}"
     - "{{ clickhouse_path_data }}"
+    - "{{ clickhouse_access_control_path }}"
     - "{{ clickhouse_path_chk }}"
     - "{{ clickhouse_path_chk_snap }}"
     - "{{ clickhouse_path_chk_log }}"
@@ -52,6 +53,7 @@
     owner: "{{ clickhouse_user | default('clickhouse') }}"
     group: "{{ clickhouse_group | default('clickhouse') }}"
     mode: "ug=rw,o-rwx"
+  notify: restart-ch
   become: true
 
 - name: Config | Generate remote_servers config
@@ -94,7 +96,7 @@
     owner: "{{ clickhouse_user | default('clickhouse') }}"
     group: "{{ clickhouse_group | default('clickhouse') }}"
     mode: "u=rw,og=r"
-  # notify: restart-ch
+  notify: restart-ch
   become: true
   when: clickhouse_storage is defined
 
@@ -104,4 +106,5 @@
     search_string: '<interserver_http_port>'
     state: absent
   become: true
+  notify: restart-ch
   when: clickhouse_interserver_https is defined

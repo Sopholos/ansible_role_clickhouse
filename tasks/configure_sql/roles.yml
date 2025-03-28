@@ -1,0 +1,35 @@
+---
+- name: CLICKHOUSE | List roles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "SELECT name FROM system.roles WHERE storage == 'local_directory';"
+  changed_when: False
+  register: clickhouse_existing_sql_roles
+  tags: [config_roles]
+
+- name: CLICKHOUSE | Drop roles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    "DROP ROLE IF EXISTS '{{ item }}';"
+  with_items: "{{ clickhouse_existing_sql_roles.stdout_lines }}"
+  when:
+    - clickhouse_existing_sql_roles is defined
+    - item not in clickhouse_custom_roles | map(attribute='name') | list
+  register: drop_roles
+  changed_when: drop_roles.rc != 0
+  tags: [config_roles]
+
+- name: CLICKHOUSE | Add roles (SQL-driven)
+  ansible.builtin.command: |
+    {{ clickhouse_connection_string }}
+    -q
+    {{ lookup('template', 'DDL/ROLE.j2') | quote }};
+  with_items: "{{ clickhouse_custom_roles }}"
+  when:
+    - clickhouse_custom_roles is defined
+    - item.name not in clickhouse_existing_sql_roles.stdout_lines
+  register: add_roles
+  changed_when: add_roles.rc != 0
+  tags: [config_roles]

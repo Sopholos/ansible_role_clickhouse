@@ -79,8 +79,8 @@ clickhouse_users_default:
   - { name: "default", password: "", networks: "{{ clickhouse_networks_default }}", profile: "default", quota: "default", comment: "Default user for login if user not defined" }
   - { name: "readonly", password: "", networks: "{{ clickhouse_networks_default }}", profile: "readonly", quota: "default", comment: "Example of user with readonly access" }
 
-clickhouse_ready_retries: 3
-clickhouse_ready_delay: 5
+clickhouse_ready_retries: 5
+clickhouse_ready_delay: 1
 
 #Full form { name:'<username>', password: '<plainpassword>', password_sha256_hex: '<sha256password>',
 #   networks:"<{} with nets>", profile:'<profile>', quota:'<quota>', dbs: '{} with dbs', comment: '<some comment>'}
@@ -135,3 +135,8 @@ clickhouse_kafka_config: []
 clickhouse_kafka_topics_config: []
 
 clickhouse_merge_tree_config: []
+
+# clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}{{' --secure' if clickhouse_tcp_secure_port is defined else '' }} -u {{ clickhouse_admin.login }} --password {{ clickhouse_admin.password }}"
+clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}{{' --secure' if clickhouse_tcp_secure_port is defined else '' }}"
+
+clickhouse_custom_grants_previous_cleanup: true

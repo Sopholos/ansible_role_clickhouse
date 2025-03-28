@@ -43,21 +43,57 @@
 - include_tasks:
     file: service.yml
     apply:
-      tags: [always]
-  tags: [always]
+      tags: [install]
+  tags: [install]
 
 - name: "Wait for Clickhouse Server to Become Ready"
   wait_for:
     port: "{{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}"
     delay: "{{ clickhouse_ready_delay }}"
-  tags: [always]
+  retries: "{{ clickhouse_ready_retries }}"
+  tags: [config, install]
   when: not clickhouse_remove|bool
 
 - include_tasks:
-    file: configure/db.yml
+    file: configure_sql/settings-profiles.yml
+    apply:
+      tags: [config, config_settings_profiles]
+  tags: [config, config_settings_profiles]
+  when: not clickhouse_remove|bool
+
+- include_tasks:
+    file: configure_sql/roles.yml
+    apply:
+      tags: [config, config_roles]
+  tags: [config, config_roles]
+  when: not clickhouse_remove|bool
+
+- include_tasks:
+    file: configure_sql/quotas.yml
+    apply:
+      tags: [config, config_quotas]
+  tags: [config, config_quotas]
+  when: not clickhouse_remove|bool
+
+- include_tasks:
+    file: configure_sql/users.yml
+    apply:
+      tags: [config, config_users]
+  tags: [config, config_users]
+  when: not clickhouse_remove|bool
+
+- include_tasks:
+    file: configure_sql/db.yml
     apply:
       tags: [config, config_db]
   tags: [config, config_db]
+  when: not clickhouse_remove|bool
+
+- include_tasks:
+    file: configure_sql/perms_and_privs.yml
+    apply:
+      tags: [config, config_grants]
+  tags: [config, config_grants]
   when: not clickhouse_remove|bool
 
 - include_tasks:
