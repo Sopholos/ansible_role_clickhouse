@@ -1,9 +1,5 @@
-<?xml version="1.0"?>
-{{ ansible_managed | comment('xml') }}
-<clickhouse>
-  <macros>
+    <macros>
 {% for key, value in clickhouse_macros.items() %}
-    <{{ key }}>{{ value }}</{{ key }}>
+      <{{ key }}>{{ value }}</{{ key }}>
 {% endfor %}
-  </macros>
-</clickhouse>
+    </macros>

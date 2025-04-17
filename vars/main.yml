@@ -13,3 +13,4 @@ clickhouse_path_chk: "{{ clickhouse_path_data }}/coordination"
 clickhouse_path_chk_snap: "{{ clickhouse_path_chk }}/snapshots"
 clickhouse_path_chk_log: "{{ clickhouse_path_chk }}/log"
 clickhouse_service: 'clickhouse-server.service'
+clickhouse_keeper_service: 'clickhouse-keeper.service'

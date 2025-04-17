@@ -1,11 +1,36 @@
 <?xml version="1.0"?>
-{{ ansible_managed | comment('xml') }} 
+{{ ansible_managed | comment('xml') }}
 <clickhouse>
+  <logger>
+      <level>{{ clickhouse_keeper_logger.level }}</level>
+      <log>{{ clickhouse_keeper_logger.log }}</log>
+      <errorlog>{{ clickhouse_keeper_logger.errorlog }}</errorlog>
+      <size>{{ clickhouse_keeper_logger.size }}</size>
+      <count>{{ clickhouse_keeper_logger.count }}</count>
+  </logger>
+
+{% for host in clickhouse_listen_host %}
+  <listen_host>{{ host }}</listen_host>
+{% endfor %}
+
   <keeper_server>
+    <http_control>
+        <port>9182</port>
+        <readiness>
+            <endpoint>/ready</endpoint>
+        </readiness>
+    </http_control>
+
     <tcp_port>{{ clickhouse_keeper_port }}</tcp_port>
     <server_id>{{ clickhouse_keeper_id }}</server_id>
     <log_storage_path>{{ clickhouse_path_chk_log }}</log_storage_path>
     <snapshot_storage_path>{{ clickhouse_path_chk_snap }}</snapshot_storage_path>
+
+    <coordination_settings>
+        <operation_timeout_ms>10000</operation_timeout_ms>
+        <session_timeout_ms>30000</session_timeout_ms>
+        <raft_logs_level>warning</raft_logs_level>
+    </coordination_settings>
 
     <raft_configuration>
 {% for server in clickhousekeeper_nodes %}

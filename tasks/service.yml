@@ -1,4 +1,22 @@
 ---
+- name: Clickhouser | Copy Keeper Daemon scripts
+  ansible.builtin.template:
+    src: clickhouse-keeper.service.j2
+    dest: "/lib/systemd/system/clickhouse-keeper.service"
+    mode: 0644
+  notify: restart-ch
+
+- name: >-
+    Ensure {{ clickhouse_keeper_service }}
+    is enabled: {{ clickhouse_keeper_service_enable }}
+    and state: {{ clickhouse_keeper_service_ensure }}
+  systemd:
+    name: "{{ clickhouse_keeper_service }}"
+    enabled: "{{ clickhouse_keeper_service_enable }}"
+    state: "{{ clickhouse_keeper_service_ensure }}"
+    daemon_reload: true
+  become: true
+
 - name: Clickhouser | Copy Daemon scripts
   ansible.builtin.template:
     src: clickhouse-server.service.j2

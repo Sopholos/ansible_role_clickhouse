@@ -1,12 +1,11 @@
-<?xml version="1.0"?>
-{{ ansible_managed | comment('xml') }}
-<clickhouse>
-  <zookeeper>
+    <zookeeper>
+{% if clickhouse_zookeeper_identity is defined %}
+      <identity>{{ clickhouse_zookeeper_identity.user }}:{{clickhouse_zookeeper_identity.password }}</identity>
+{% endif %}
 {% for server in clickhousekeeper_nodes %}
-    <node index="{{ server.id }}">
-      <host>{{ server.hostname }}</host>
-      <port>{{ clickhouse_keeper_port }}</port>
-    </node>
+      <node index="{{ server.id }}">
+        <host>{{ server.hostname }}</host>
+        <port>{{ clickhouse_keeper_port }}</port>
+      </node>
 {% endfor %}
-  </zookeeper>
-</clickhouse>
+    </zookeeper>

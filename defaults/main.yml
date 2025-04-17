@@ -4,6 +4,8 @@
 clickhouse_version: 'latest'
 clickhouse_service_ensure: 'started'
 clickhouse_service_enable: true
+clickhouse_keeper_service_enable: true
+clickhouse_keeper_service_ensure: 'started'
 
 #Flag for using with requirements check
 clickhouse_supported: false
@@ -105,6 +107,13 @@ clickhouse_logger:
   log: "{{ clickhouse_path_logdir }}/clickhouse-server.log"
   errorlog: "{{ clickhouse_path_logdir }}/clickhouse-server.err.log"
   size: 1000M
+  count: 10
+
+clickhouse_keeper_logger:
+  level: trace
+  log: "{{ clickhouse_path_logdir }}/clickhouse-keeper.log"
+  errorlog: "{{ clickhouse_path_logdir }}/clickhouse-keeper.err.log"
+  size: 100M
   count: 10
 
 clickhouse_config_dictionaries_lazy_load: true
