@@ -36,15 +36,15 @@
   tags: [config, config_sys]
   when: not clickhouse_remove|bool
 
-- name: "Notify Handlers Now"
-  tags: [always]
-  meta: flush_handlers
-
 - include_tasks:
     file: service.yml
     apply:
       tags: [install]
   tags: [install]
+
+- name: "Notify Handlers Now"
+  tags: [always]
+  meta: flush_handlers
 
 - name: "Wait for Clickhouse Server to Become Ready"
   wait_for:

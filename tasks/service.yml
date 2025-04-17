@@ -5,3 +5,14 @@
     dest: "/lib/systemd/system/clickhouse-server.service"
     mode: 0644
   notify: restart-ch
+
+- name: >-
+    Ensure {{ clickhouse_service }}
+    is enabled: {{ clickhouse_service_enable }}
+    and state: {{ clickhouse_service_ensure }}
+  systemd:
+    name: "{{ clickhouse_service }}"
+    enabled: "{{ clickhouse_service_enable }}"
+    state: "{{ clickhouse_service_ensure }}"
+    daemon_reload: true
+  become: true
