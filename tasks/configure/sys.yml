@@ -18,6 +18,20 @@
   notify: restart-ch
   become: true
 
+- name: Config | Certs file ownership, group and permissions
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ clickhouse_user | default('clickhouse') }}"
+    group: "{{ clickhouse_group | default('clickhouse') }}"
+    mode: "u=r,og=r"
+  loop:
+    - "{{ clickhouse_ssl_server.certificate_file }}"
+    - "{{ clickhouse_ssl_server.private_key_file }}"
+    - "{{ clickhouse_ssl_server.dh_params_file | default('') }}"
+  when: item | length > 0
+  notify: restart-ch
+  become: true
+
 - name: Config | Create config.d folder
   file:
     path: "{{ clickhouse_path_configdir }}/config.d"
