@@ -30,7 +30,7 @@ Environment=CLICKHOUSE_WATCHDOG_NO_FORWARD=1
 TimeoutStartSec=0
 # %p is resolved to the systemd unit name
 RuntimeDirectory=%p
-ExecStart=/usr/bin/clickhouse-server --config={{ clickhouse_path_configdir }}/config.d/config.xml --pid-file=%t/%p/%p.pid
+ExecStart=/usr/bin/clickhouse-server --config={{ clickhouse_path_configdir }}/config.xml --pid-file=%t/%p/%p.pid
 # Minus means that this file is optional.
 EnvironmentFile=-/etc/default/%p
 # Bring back /etc/default/clickhouse for backward compatibility

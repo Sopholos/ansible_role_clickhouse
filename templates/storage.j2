@@ -30,4 +30,10 @@
 {% endfor %}
     </policies>
   </storage_configuration>
+
+{% if clickhouse_storage.backups is defined %}
+  <backups>
+      <allowed_disk>{{ clickhouse_storage.backups.allowed_disk }}</allowed_disk>
+  </backups>
+{% endif %}
 </clickhouse>

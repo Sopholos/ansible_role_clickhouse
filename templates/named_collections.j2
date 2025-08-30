@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+{{ ansible_managed | comment('xml') }}
+
+{{ __clickhouse_named_collections | ansible.utils.to_xml(full_document=false) }}
