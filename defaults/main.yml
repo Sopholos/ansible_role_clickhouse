@@ -151,3 +151,5 @@ clickhouse_merge_tree_config: []
 clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhouse_tcp_secure_port | default(clickhouse_tcp_port) }}{{' --secure' if clickhouse_tcp_secure_port is defined else '' }}"
 
 clickhouse_custom_grants_previous_cleanup: true
+
+clickhouse_cron_template_script_path: /opt/clickhouse

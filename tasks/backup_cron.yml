@@ -1,0 +1,35 @@
+---
+- name: Ensure {{ clickhouse_cron_template_script_path }} directory exists.
+  file:
+    path: "{{ clickhouse_cron_template_script_path }}"
+    state: directory
+    mode: 0700
+
+- name: prepare | creates a powershell scripts for cron backups
+  template:
+    src: Backup-DBs.ps1.j2
+    dest: "{{ clickhouse_cron_template_script_path }}/{{ item.name }}.ps1"
+    mode: '0755'
+  loop: "{{ clickhouse_backup.backup_sets }}"
+  when:
+    - clickhouse_backup.backup_sets is defined
+
+- name: override tmp_jobs to null
+  set_fact:
+    tmp_jobs:
+
+- name: prepare | creates a cron restore
+  set_fact:
+    cron_pure: "{{ item.cron }}"
+    cron_extra:
+      job: "{{ clickhouse_cron_template_script_path }}/{{item.name}}.ps1"
+      name: "Backup-{{ item.name }}"
+      cron_file: clickhouse_backup
+      tag: "{{ item.tag | default('CRON_CLICKHOUSE_BACKUP') }}"
+  with_items: "{{ clickhouse_backup.backup_sets }}"
+  register: tmp_jobs
+  when:
+    - clickhouse_backup.backup_sets is defined
+    - item.cron is defined
+
+# - import_tasks: cron_jobs_prepare.yml

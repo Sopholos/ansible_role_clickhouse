@@ -1,0 +1,15 @@
+---
+- name: prepare | powershell
+  import_tasks: prepare-powershell.yaml
+
+- name: prepare | copy PS scripts
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: u+rwx,g=rx,o=rx
+  with_items:
+    - { src: Backup-ClickDB.ps1, dest: /usr/local/bin/Backup-ClickDB.ps1 }
+    - { src: Invoke-ClickSQL.ps1, dest: /usr/local/bin/Invoke-ClickSQL.ps1 }
+    # - { src: Invoke-ClickSQLFile.ps1, dest: /usr/local/bin/Invoke-ClickSQLFile.ps1 }

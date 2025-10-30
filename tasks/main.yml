@@ -17,6 +17,12 @@
 - include_tasks: params.yml
   tags: [always]
 
+- import_tasks: backup_install.yml
+  tags: [backup_install]
+
+- import_tasks: backup_cron.yml
+  tags: [backup]
+
 - include_tasks:
     file: "{{ lookup('first_found', params) }}"
     apply:

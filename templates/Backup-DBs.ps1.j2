@@ -1,0 +1,33 @@
+#!/snap/bin/powershell -Command
+{{ ansible_managed | comment }}
+
+$ErrorActionPreference = "Stop"
+
+$start = Get-Date
+
+try
+{
+{% if item.dumps is defined %}
+{% for dump in item.dumps %}
+    /usr/local/bin/Backup-ClickDB.ps1 `
+        -ClickHost "{{ dump.host }}" `
+        -ClickPort "{{ dump.port }}" `
+        -Secure {{ dump.secure | default(false) | ternary('$true', '$false') }} `
+        -ClickUser {{ dump.user | default(false) | ternary('\"' ~ (dump.user | default('')) ~ '\"', '$null') }} `
+        -ClickPassword {{ dump.password | default(false) | ternary('\"' ~ (dump.password | default('')) ~ '\"', '$null') }} `
+        -Database "{{ dump.database }}" `
+        -BackupDisk "{{ dump.backupDisk }}" `
+        -SubFolder {{ dump.subFolder | default(false) | ternary('\"' ~ (dump.subFolder | default('')) ~ '\"', '$null') }} `
+        -Settings {{ dump.settings | default(false) | ternary('\"' ~ (dump.settings | default('')) ~ '\"', '$null') }}
+
+{% endfor %}
+{% endif %}
+
+    Write-Host -ForegroundColor Green "Backed up all successfully"
+}
+catch {
+    throw
+}
+finally {
+    Write-Host "Took: " ((Get-Date) - $start)
+}
