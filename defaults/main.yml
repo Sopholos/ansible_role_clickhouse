@@ -153,3 +153,6 @@ clickhouse_connection_string: "clickhouse-client -h 127.0.0.1 --port {{ clickhou
 clickhouse_custom_grants_previous_cleanup: true
 
 clickhouse_cron_template_script_path: /opt/clickhouse
+
+# import role from https://github.com/Sopholos/ansible_role_cron.git
+clickhouse_crontab_role_path: ../../../linux/role_cron

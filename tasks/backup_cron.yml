@@ -32,4 +32,4 @@
     - clickhouse_backup.backup_sets is defined
     - item.cron is defined
 
-# - import_tasks: cron_jobs_prepare.yml
+- import_tasks: cron_jobs_prepare.yml

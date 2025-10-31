@@ -23,6 +23,9 @@
 - import_tasks: backup_cron.yml
   tags: [backup]
 
+- import_tasks: cron_jobs_register.yml
+  tags: [backup]
+
 - include_tasks:
     file: "{{ lookup('first_found', params) }}"
     apply:
