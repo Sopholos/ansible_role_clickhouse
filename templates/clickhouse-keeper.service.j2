@@ -18,7 +18,7 @@ Restart=always
 RestartSec=30
 # %p is resolved to the systemd unit name
 RuntimeDirectory=%p
-ExecStart=/usr/bin/clickhouse-keeper --config={{ clickhouse_path_configdir }}/config.d/clickhousekeeper-servers.xml --pid-file=%t/%p/%p.pid
+ExecStart=/usr/bin/clickhouse-keeper --config={{ clickhouse_keeper_path_configdir }}/config.d/clickhousekeeper-servers.xml --pid-file=%t/%p/%p.pid
 # Minus means that this file is optional.
 EnvironmentFile=-/etc/default/%p
 # Bring back /etc/default/clickhouse for backward compatibility

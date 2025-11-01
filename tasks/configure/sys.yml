@@ -9,6 +9,7 @@
   loop:
     - "{{ clickhouse_path_logdir }}"
     - "{{ clickhouse_path_configdir }}"
+    - "{{ clickhouse_keeper_path_configdir }}"
     - "{{ clickhouse_path_tmp }}"
     - "{{ clickhouse_path_data }}"
     - "{{ clickhouse_access_control_path }}"
@@ -30,6 +31,15 @@
     - "{{ clickhouse_ssl_server.dh_params_file | default('') }}"
   when: item | length > 0
   notify: restart-ch
+  become: true
+
+- name: Config | Create keeper config.d folder
+  file:
+    path: "{{ clickhouse_keeper_path_configdir }}/config.d"
+    state: directory
+    owner: "{{ clickhouse_user | default('clickhouse') }}"
+    group: "{{ clickhouse_group | default('clickhouse') }}"
+    mode: "ug=rwx,o-rwx"
   become: true
 
 - name: Config | Create config.d folder
@@ -73,7 +83,7 @@
 - name: Config | Generate Clickhouse Keeper servers config
   template:
     src: clickhousekeeper-servers.j2
-    dest: "{{ clickhouse_path_configdir }}/config.d/clickhousekeeper-servers.xml"
+    dest: "{{ clickhouse_keeper_path_configdir }}/config.d/clickhousekeeper-servers.xml"
     owner: "{{ clickhouse_user | default('clickhouse') }}"
     group: "{{ clickhouse_group | default('clickhouse') }}"
     mode: "u=rw,og=r"

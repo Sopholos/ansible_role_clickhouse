@@ -1,5 +1,35 @@
 ---
 # handlers file for clickhouse
+- name: Looking for preprocessed configs in {{ clickhouse_path_configdir }}
+  ansible.builtin.find:
+    paths: "{{ clickhouse_path_configdir }}"
+    patterns: "*preprocessed*.xml"
+    recurse: yes
+  register: files_to_remove
+  listen: 'restart-ch'
+
+- name: Remove found files in {{ clickhouse_path_configdir }}
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ files_to_remove.files }}"
+  listen: 'restart-ch'
+
+- name: Looking for preprocessed configs in {{ clickhouse_keeper_path_configdir }}
+  ansible.builtin.find:
+    paths: "{{ clickhouse_keeper_path_configdir }}"
+    patterns: "*preprocessed*.xml"
+    recurse: yes
+  register: files_to_remove
+  listen: 'restart-ch'
+
+- name: Remove found files in {{ clickhouse_keeper_path_configdir }}
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ files_to_remove.files }}"
+  listen: 'restart-ch'
+
 - name: "Restart Clickhouse Service"
   set_fact:
     clickhouse_service_ensure: "restarted"

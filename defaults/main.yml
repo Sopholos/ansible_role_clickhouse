@@ -133,6 +133,7 @@ clickhouse_dicts: []
 
 clickhouse_path_base: "/var/lib"
 clickhouse_path_configdir: "/etc/clickhouse-server"
+clickhouse_keeper_path_configdir: "/etc/clickhouse-keeper"
 clickhouse_path_logdir: "/var/log/clickhouse-server"
 
 clickhouse_path_user_files: "{{ clickhouse_path_base }}/clickhouse/user_files/"
