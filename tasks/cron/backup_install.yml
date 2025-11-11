@@ -12,4 +12,12 @@
   with_items:
     - { src: Backup-ClickDB.ps1, dest: /usr/local/bin/Backup-ClickDB.ps1 }
     - { src: Invoke-ClickSQL.ps1, dest: /usr/local/bin/Invoke-ClickSQL.ps1 }
-    # - { src: Invoke-ClickSQLFile.ps1, dest: /usr/local/bin/Invoke-ClickSQLFile.ps1 }
+    - { src: Invoke-ClickSQLFile.ps1, dest: /usr/local/bin/Invoke-ClickSQLFile.ps1 }
+
+- name: Ensure {{ clickhouse_cron_template_script_path }} directory exists.
+  file:
+    path: "{{ clickhouse_cron_template_script_path }}"
+    owner: "{{ clickhouse_user | default('clickhouse') }}"
+    group: "{{ clickhouse_group | default('clickhouse') }}"
+    state: directory
+    mode: 0700

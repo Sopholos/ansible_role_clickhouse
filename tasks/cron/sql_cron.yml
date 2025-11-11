@@ -1,0 +1,40 @@
+---
+- name: prepare | creates a powershell scripts for sql cron
+  template:
+    src: Invoke-SQL.ps1.j2
+    dest: "{{ clickhouse_cron_template_script_path }}/{{ item.name }}.ps1"
+    mode: '0755'
+  loop: "{{ clickhouse_cronjob_scripts }}"
+  when:
+    - clickhouse_cronjob_scripts is defined
+    - item.script is defined
+
+- name: prepare | creates a sql scripts for cron
+  template:
+    src: cron_script.sql.j2
+    dest: "{{ clickhouse_cron_template_script_path }}/{{ item.name }}.sql"
+    owner: "{{ clickhouse_user | default('clickhouse') }}"
+    mode: '0755'
+  with_items: "{{ clickhouse_cronjob_scripts }}"
+  when:
+    - clickhouse_cronjob_scripts is defined
+    - item.script is defined
+
+- name: override tmp_jobs to null
+  set_fact:
+    tmp_jobs:
+
+- name: prepare | creates a cron tasks for scripts
+  set_fact:
+    cron_pure: "{{ item.cron }}"
+    cron_extra:
+      job: "{{ clickhouse_cron_template_script_path }}/{{ item.name }}.ps1"
+      name: "cronjob_scripts_{{ item.name }}"
+      cron_file: sql_scripts
+      tag: "{{ item.tag | default('CRON_SQL') }}"
+  with_items: "{{ clickhouse_cronjob_scripts }}"
+  when:
+    - clickhouse_cronjob_scripts is defined
+  register: tmp_jobs
+
+- import_tasks: cron_jobs_prepare.yml

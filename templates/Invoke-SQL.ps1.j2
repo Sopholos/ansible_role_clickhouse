@@ -1,0 +1,25 @@
+#!/snap/bin/powershell -Command
+{{ ansible_managed | comment }}
+
+$ErrorActionPreference = "Stop"
+
+$start = Get-Date
+
+try
+{
+    /usr/local/bin/Invoke-ClickSQLFile.ps1 `
+        -ClickHost "{{ item.host }}" `
+        -ClickPort "{{ item.port }}" `
+        -Secure {{ item.secure | default(false) | ternary('$true', '$false') }} `
+        -ClickUser {{ item.user | default(false) | ternary('\"' ~ (item.user | default('')) ~ '\"', '$null') }} `
+        -ClickPassword {{ item.password | default(false) | ternary('\"' ~ (item.password | default('')) ~ '\"', '$null') }} `
+        -File "{{ clickhouse_cron_template_script_path }}/{{ item.name }}.sql"
+
+    Write-Host -ForegroundColor Green "Executed all successfully"
+}
+catch {
+    throw
+}
+finally {
+    Write-Host "Took: " ((Get-Date) - $start)
+}

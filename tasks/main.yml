@@ -17,13 +17,16 @@
 - include_tasks: params.yml
   tags: [always]
 
-- import_tasks: backup_install.yml
+- import_tasks: cron/backup_install.yml
   tags: [backup_install]
 
-- import_tasks: backup_cron.yml
+- import_tasks: cron/backup_cron.yml
   tags: [backup]
 
-- import_tasks: cron_jobs_register.yml
+- import_tasks: cron/sql_cron.yml
+  tags: [sql_cron]
+
+- import_tasks: cron/cron_jobs_register.yml
   tags: [backup]
 
 - include_tasks:

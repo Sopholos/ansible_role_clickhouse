@@ -1,10 +1,4 @@
 ---
-- name: Ensure {{ clickhouse_cron_template_script_path }} directory exists.
-  file:
-    path: "{{ clickhouse_cron_template_script_path }}"
-    state: directory
-    mode: 0700
-
 - name: prepare | creates a powershell scripts for cron backups
   template:
     src: Backup-DBs.ps1.j2
