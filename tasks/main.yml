@@ -64,56 +64,72 @@
     delay: "{{ clickhouse_ready_delay }}"
   retries: "{{ clickhouse_ready_retries }}"
   tags: [config, install]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/settings-profiles.yml
     apply:
       tags: [config, config_settings_profiles]
   tags: [config, config_settings_profiles]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/roles.yml
     apply:
       tags: [config, config_roles]
   tags: [config, config_roles]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/quotas.yml
     apply:
       tags: [config, config_quotas]
   tags: [config, config_quotas]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/users.yml
     apply:
       tags: [config, config_users]
   tags: [config, config_users]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/db.yml
     apply:
       tags: [config, config_db]
   tags: [config, config_db]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure_sql/perms_and_privs.yml
     apply:
       tags: [config, config_grants]
   tags: [config, config_grants]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: configure/dict.yml
     apply:
       tags: [config, config_dict]
   tags: [config, config_dict]
-  when: not clickhouse_remove|bool
+  when:
+    - not clickhouse_remove|bool
+    - clickhouse_service_enable
 
 - include_tasks:
     file: remove.yml

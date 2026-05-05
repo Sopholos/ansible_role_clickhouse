@@ -89,7 +89,9 @@
     mode: "u=rw,og=r"
   notify: restart-ch
   become: true
-  when: (clickhousekeeper_nodes is defined) and (clickhousekeeper_nodes | selectattr('id', '==', clickhouse_keeper_id))
+  when:
+    - clickhouse_keeper_service_enable
+    - (clickhousekeeper_nodes is defined) and (clickhousekeeper_nodes | selectattr('id', '==', clickhouse_keeper_id))
 
 - name: Config | Generate storage config
   template:
