@@ -29,12 +29,19 @@
     state: absent
   loop: "{{ files_to_remove.files }}"
   listen: 'restart-ch'
+  when: clickhouse_keeper_service_enable
 
 - name: "Restart Clickhouse Service"
   set_fact:
     clickhouse_service_ensure: "restarted"
+  listen: 'restart-ch'
+  when: clickhouse_service_enable
+
+- name: "Restart Clickhouse Keeper Service"
+  set_fact:
     clickhouse_keeper_service_ensure: "restarted"
   listen: 'restart-ch'
+  when: clickhouse_keeper_service_enable
 
 - name: >-
     Ensure {{ clickhouse_keeper_service }}
