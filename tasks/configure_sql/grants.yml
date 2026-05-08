@@ -1,5 +1,5 @@
 ---
-- name: CLICKHOUSE | List perms and privs (SQL-driven)
+- name: CLICKHOUSE | List perms and privs (SQL-driven)/{{ item.to }}
   ansible.builtin.command: |
     {{ clickhouse_connection_string }}
     -q
@@ -20,13 +20,13 @@
   register: clickhouse_existing_sql_grants
   tags: [config_grants]
 
-- name: CLICKHOUSE | Set var with the perms and privs listed
+- name: CLICKHOUSE | Set var with the perms and privs listed/{{ item.to }}
   ansible.builtin.set_fact:
     actual_privs: "{{ (clickhouse_existing_sql_grants.stdout | from_json)['data'] }}"
   tags: [config_grants]
 
 # All logic of this revokes and grants are in the template because of "speed performance" instead of ansible task doing the loop
-- name: CLICKHOUSE | Revoke user and roles grants missing (SQL-driven)
+- name: CLICKHOUSE | Revoke user and roles grants missing (SQL-driven)/{{ item.to }}
   ansible.builtin.command: |
     {{ clickhouse_connection_string }}
     --multiquery -q {{ lookup('template', 'DDL/REVOKE.j2') | quote }}
@@ -35,7 +35,7 @@
   changed_when: revoke_grants_missing.rc != 0
   tags: [config_grants]
 
-- name: CLICKHOUSE | Do Grants for users and roles (SQL-driven)
+- name: CLICKHOUSE | Do Grants for users and roles (SQL-driven)/{{ item.to }}
   ansible.builtin.command: |
     {{ clickhouse_connection_string }}
     --multiquery -q {{ lookup('template', 'DDL/GRANT.j2') | quote }}
