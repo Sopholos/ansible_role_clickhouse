@@ -39,6 +39,8 @@ clickhouse_http_port: 8123
 clickhouse_tcp_port: 9000
 clickhouse_keeper_port: 9181
 
+clickhouse_timezone: UTC
+
 # clickhouse_https_port: 8443
 # clickhouse_tcp_secure_port: 9440
 # clickhouse_tcp_with_proxy_port: 9011
